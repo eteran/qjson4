@@ -83,8 +83,23 @@ bool QJsonDocument::operator!=(const QJsonDocument &other) const {
 // Name: operator==
 //------------------------------------------------------------------------------
 bool QJsonDocument::operator==(const QJsonDocument &other) const {
-	Q_UNUSED(other);
-	// TODO
+	
+	if(isArray() && other.isArray()) {
+		return array() == other.array();
+	}
+
+	if(isObject() && other.isObject()) {
+		return object() == other.object();
+	}
+	
+	if(isEmpty() && other.isEmpty()) {
+		return true;
+	}
+
+	if(isNull() && other.isNull()) {
+		return true;
+	}
+
 	return false;
 }
 
