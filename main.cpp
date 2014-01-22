@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
 	QCoreApplication app(argc, argv);
 
 #if QT_VERSION < 0x050000
+	// unfortunatly this part seems needed for Qt4 :-(
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 #endif
-
 
 	QFile f("test.json");
 	if(f.open(QIODevice::ReadOnly)) {
