@@ -1,0 +1,18 @@
+{
+	"test1":1,
+	"object1":{
+		"object2":{
+			"test2":2,
+			"object3":{
+				"test3":3,
+				"test4":[1,2,3,4]
+			}
+		}
+	},
+	"test\nreturn":"hello\tworld",
+	"u":"\uD840\uDC8A",
+	"b1":true,
+	"b2":false,
+	"n":null,
+	"x":1234.5
+}
