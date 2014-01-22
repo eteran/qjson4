@@ -56,7 +56,7 @@ public:
 	QJsonValue(const QJsonValue &other);
 	QJsonValue(int n);
 	~QJsonValue();
-	
+
 private:
 	// to protect against incorrect usage due to passing a const char *
 	QJsonValue(const void *);

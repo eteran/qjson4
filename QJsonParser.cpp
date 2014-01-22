@@ -40,7 +40,7 @@ void throw_error(QJsonParseError::ParseError e, int offset) {
 unsigned int to_hex(int ch) {
 
 	static const int hexval[256] = {
-		0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
+		0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 		0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 		0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 		0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
@@ -73,8 +73,8 @@ QJsonRoot *QJsonParser::parse() {
 	if(begin_ == end_) {
 		return 0;
 	}
-	
-	try {	
+
+	try {
 		const char ch = peek();
 		switch(ch) {
 		case '[':
@@ -141,7 +141,7 @@ QJsonValue QJsonParser::getValue() {
 	case 'n':
 		return getNull();
 	}
-	
+
 	throw_error(QJsonParseError::MissingObject, p_ - begin_);
 	return QJsonValue();
 }
@@ -157,7 +157,7 @@ QJsonObject *QJsonParser::getObject() {
 	if(tok != '{') {
 		throw_error(QJsonParseError::IllegalValue, p_ - begin_);
 	}
-	
+
 	++p_;
 
 	// handle empty object
@@ -191,11 +191,11 @@ QJsonArray *QJsonParser::getArray() {
 	QScopedPointer<QJsonArray> arr(new QJsonArray);
 
 	char tok = peek();
-	
+
 	if(tok != '[') {
 		throw_error(QJsonParseError::IllegalValue, p_ - begin_);
 	}
-	
+
 	++p_;
 
 	// handle empty object
@@ -208,7 +208,7 @@ QJsonArray *QJsonParser::getArray() {
 
 			tok = peek();
 			++p_;
-			
+
 		} while(tok == ',');
 	}
 
@@ -223,7 +223,7 @@ QJsonArray *QJsonParser::getArray() {
 // Name: getPair
 //------------------------------------------------------------------------------
 QPair<QString, QJsonValue> QJsonParser::getPair() {
-	
+
 	QString key = getString();
 
 	if(peek() != ':') {
@@ -238,7 +238,7 @@ QPair<QString, QJsonValue> QJsonParser::getPair() {
 // Name: getString
 //------------------------------------------------------------------------------
 QString QJsonParser::getString() {
-	
+
 	if(peek() != '"') {
 		throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
 	}
@@ -275,23 +275,23 @@ QString QJsonParser::getString() {
 
 						quint16 w1 = 0;
 						quint16 w2 = 0;
-						
+
 						w1 |= (to_hex(hex[0]) << 12);
 						w1 |= (to_hex(hex[1]) << 8);
 						w1 |= (to_hex(hex[2]) << 4);
 						w1 |= (to_hex(hex[3]));
-						
+
 						s.append(QChar(w1));
-						
+
 						if((w1 & 0xfc00) == 0xdc00) {
 							throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-						}				
+						}
 
 						if((w1 & 0xfc00) == 0xd800) {
 							// part of a surrogate pair
 							if(p_ == end_ || *++p_ != '\\') { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); }
 							if(p_ == end_ || *++p_ != 'u')  { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); }
-							
+
 							// convert \uXXXX escape sequences to UTF-8
 							if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[0] = *++p_;
 							if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[1] = *++p_;
@@ -302,13 +302,13 @@ QString QJsonParser::getString() {
 							if(!std::isxdigit(hex[1])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
 							if(!std::isxdigit(hex[2])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
 							if(!std::isxdigit(hex[3])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-							
+
 							w2 |= (to_hex(hex[0]) << 12);
 							w2 |= (to_hex(hex[1]) << 8);
 							w2 |= (to_hex(hex[2]) << 4);
 							w2 |= (to_hex(hex[3]));
-							
-							s.append(QChar(w2));					
+
+							s.append(QChar(w2));
 						}
 					}
 					break;
@@ -329,7 +329,7 @@ QString QJsonParser::getString() {
 	}
 
 	++p_;
-	
+
 	return s;
 }
 
@@ -421,11 +421,11 @@ QJsonValue QJsonParser::getNumber() {
 			++p_;
 		}
 	}
-	
+
 	if(p_ == end_) {
 		throw_error(QJsonParseError::TerminationByNumber, p_ - begin_);
 	}
-	
+
 	return QJsonValue(QByteArray::fromRawData(first, p_ - first).toDouble());
 }
 

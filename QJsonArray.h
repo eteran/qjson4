@@ -35,6 +35,7 @@ class QJsonValueRef;
 class QJsonArray : public QJsonRoot {
 	friend class QJsonDocument;
 	friend class QJsonValue;
+	friend class QJsonValueRef;
 	friend class QJsonParser;
 public:
 	// TODO: manually implement the array, for now we use QList
@@ -104,10 +105,10 @@ public:
 	void removeLast();
 	void replace(int i, const QJsonValue &value);
 	QJsonValue takeAt(int i);
-	
+
 public:
 	QVariantList toVariantList() const;
-	
+
 public:
 	static QJsonArray fromStringList(const QStringList &list);
 	static QJsonArray fromVariantList(const QVariantList &list);

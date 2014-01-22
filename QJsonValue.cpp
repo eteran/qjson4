@@ -320,7 +320,7 @@ QJsonValue QJsonValue::fromVariant(const QVariant &variant) {
 	if(variant.isNull()) {
 		return QJsonValue(Null);
 	}
-	
+
 	switch(variant.type()) {
 	case QVariant::Bool:
 		return QJsonValue(variant.toBool());
@@ -346,7 +346,7 @@ QJsonValue QJsonValue::fromVariant(const QVariant &variant) {
 		}
 		break;
 	}
-	
+
 	return QJsonValue(Null);
 
 }

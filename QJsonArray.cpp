@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //------------------------------------------------------------------------------
 // Name: QJsonArray
+// Desc: default constructor
 //------------------------------------------------------------------------------
 QJsonArray::QJsonArray() {
 
@@ -32,6 +33,7 @@ QJsonArray::QJsonArray() {
 
 //------------------------------------------------------------------------------
 // Name: QJsonArray
+// Desc: copy constructor
 //------------------------------------------------------------------------------
 QJsonArray::QJsonArray(const QJsonArray &other) : values_(other.values_) {
 
@@ -39,6 +41,7 @@ QJsonArray::QJsonArray(const QJsonArray &other) : values_(other.values_) {
 
 //------------------------------------------------------------------------------
 // Name: ~QJsonArray
+// Desc: destructor
 //------------------------------------------------------------------------------
 QJsonArray::~QJsonArray() {
 
@@ -46,6 +49,7 @@ QJsonArray::~QJsonArray() {
 
 //------------------------------------------------------------------------------
 // Name: operator=
+// Desc: assignment operator
 //------------------------------------------------------------------------------
 QJsonArray &QJsonArray::operator=(const QJsonArray &other) {
 	QJsonArray(other).swap(*this);
@@ -54,6 +58,7 @@ QJsonArray &QJsonArray::operator=(const QJsonArray &other) {
 
 //------------------------------------------------------------------------------
 // Name: operator!=
+// Desc: returns true if the compared array IS NOT equal to this
 //------------------------------------------------------------------------------
 bool QJsonArray::operator!=(const QJsonArray &other) const {
 	return values_ != other.values_;
@@ -61,6 +66,7 @@ bool QJsonArray::operator!=(const QJsonArray &other) const {
 
 //------------------------------------------------------------------------------
 // Name: operator==
+// Desc: returns true if the compared array IS equal to this
 //------------------------------------------------------------------------------
 bool QJsonArray::operator==(const QJsonArray &other) const {
 	return values_ == other.values_;
@@ -68,6 +74,7 @@ bool QJsonArray::operator==(const QJsonArray &other) const {
 
 //------------------------------------------------------------------------------
 // Name: begin
+// Desc: returns an iterator to the first contained element
 //------------------------------------------------------------------------------
 QJsonArray::const_iterator QJsonArray::begin() const {
 	return values_.begin();
@@ -75,6 +82,7 @@ QJsonArray::const_iterator QJsonArray::begin() const {
 
 //------------------------------------------------------------------------------
 // Name: end
+// Desc: returns an iterator to one past the last contained element
 //------------------------------------------------------------------------------
 QJsonArray::const_iterator QJsonArray::end() const {
 	return values_.end();
@@ -82,6 +90,7 @@ QJsonArray::const_iterator QJsonArray::end() const {
 
 //------------------------------------------------------------------------------
 // Name: begin
+// Desc: returns an iterator to the first contained element
 //------------------------------------------------------------------------------
 QJsonArray::iterator QJsonArray::begin() {
 	return values_.begin();
@@ -89,6 +98,7 @@ QJsonArray::iterator QJsonArray::begin() {
 
 //------------------------------------------------------------------------------
 // Name: end
+// Desc: returns an iterator to one past the last contained element
 //------------------------------------------------------------------------------
 QJsonArray::iterator QJsonArray::end() {
 	return values_.end();
@@ -96,6 +106,7 @@ QJsonArray::iterator QJsonArray::end() {
 
 //------------------------------------------------------------------------------
 // Name: constBegin
+// Desc: returns an iterator to the first contained element
 //------------------------------------------------------------------------------
 QJsonArray::const_iterator QJsonArray::constBegin() const {
 	return begin();
@@ -103,6 +114,7 @@ QJsonArray::const_iterator QJsonArray::constBegin() const {
 
 //------------------------------------------------------------------------------
 // Name: constEnd
+// Desc: returns an iterator to one past the last contained element
 //------------------------------------------------------------------------------
 QJsonArray::const_iterator QJsonArray::constEnd() const {
 	return end();
@@ -110,15 +122,19 @@ QJsonArray::const_iterator QJsonArray::constEnd() const {
 
 //------------------------------------------------------------------------------
 // Name: first
+// Desc: returns the first element by value
 //------------------------------------------------------------------------------
 QJsonValue QJsonArray::first() const {
+	Q_ASSERT(!empty());
 	return values_.first();
 }
 
 //------------------------------------------------------------------------------
 // Name: last
+// Desc: returns the last element by value
 //------------------------------------------------------------------------------
 QJsonValue QJsonArray::last() const {
+	Q_ASSERT(!empty());
 	return values_.last();
 }
 
@@ -126,7 +142,7 @@ QJsonValue QJsonArray::last() const {
 // Name: operator[]
 //------------------------------------------------------------------------------
 QJsonValueRef QJsonArray::operator[](int i) {
-	return QJsonValueRef(&values_[i]);
+	return QJsonValueRef(this, i);
 }
 
 //------------------------------------------------------------------------------
@@ -200,77 +216,77 @@ void QJsonArray::push_front(const QJsonValue &value) {
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::append(const QJsonValue &value) {
 	values_.append(value);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 bool QJsonArray::contains(const QJsonValue &value) const {
 	return values_.contains(value);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 QJsonArray::iterator QJsonArray::erase(iterator it) {
 	return values_.erase(it);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::insert(int i, const QJsonValue &value) {
 	values_.insert(i, value);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 QJsonArray::iterator QJsonArray::insert(iterator before, const QJsonValue &value) {
 	return values_.insert(before, value);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::prepend(const QJsonValue &value) {
 	values_.prepend(value);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::removeAt(int i) {
 	values_.removeAt(i);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::removeFirst() {
 	values_.removeFirst();
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::removeLast() {
 	values_.removeLast();
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 void QJsonArray::replace(int i, const QJsonValue &value) {
 	values_.replace(i, value);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 QJsonValue QJsonArray::takeAt(int i) {
 	return values_.takeAt(i);
@@ -310,35 +326,35 @@ QJsonArray QJsonArray::fromVariantList(const QVariantList &list) {
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 QJsonRoot *QJsonArray::clone() const {
 	return new QJsonArray(*this);
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 const QJsonObject *QJsonArray::toObject() const {
 	return 0;
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 QJsonObject *QJsonArray::toObject() {
 	return 0;
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 QJsonArray *QJsonArray::toArray() {
 	return this;
 }
 
 //------------------------------------------------------------------------------
-// Name: 
+// Name:
 //------------------------------------------------------------------------------
 const QJsonArray *QJsonArray::toArray() const {
 	return this;

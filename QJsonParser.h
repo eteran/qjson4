@@ -35,13 +35,13 @@ class QJsonParser {
 
 public:
 	QJsonParser(const char *begin, const char *end);
-	
+
 public:
 	QJsonRoot *parse();
 
 public:
 	QJsonParseError state() const;
-	
+
 private:
 	char peek();
 	QJsonObject *getObject();

@@ -158,7 +158,7 @@ QByteArray QJsonDocument::toBinaryData() const {
 QString QJsonDocument::escapeString(const QString &s) const {
 
 	QString r;
-	
+
 	Q_FOREACH(QChar ch, s) {
 		switch(ch.toLatin1()) {
 		case '\"': r.append("\\\""); break;
@@ -176,7 +176,7 @@ QString QJsonDocument::escapeString(const QString &s) const {
 			break;
 		}
 	}
-	
+
 	return r;
 }
 
@@ -208,7 +208,7 @@ QString QJsonDocument::toJson(const QJsonValue &v, JsonFormat format) const {
 			if(!a.empty()) {
 				QJsonArray::const_iterator it = a.begin();
 				QJsonArray::const_iterator e  = a.end();
-				
+
 				ss << toJson(*it++, format);
 
 				for(;it != e; ++it) {
@@ -241,7 +241,7 @@ QString QJsonDocument::toJson(const QJsonValue &v, JsonFormat format) const {
 		Q_ASSERT(0);
 		break;
 	}
-	
+
 	return b;
 }
 
@@ -251,7 +251,7 @@ QString QJsonDocument::toJson(const QJsonValue &v, JsonFormat format) const {
 QByteArray QJsonDocument::toJson(JsonFormat format) const {
 
 	Q_UNUSED(format);
-		
+
 	if(isArray()) {
 		QString s = toJson(array(), format);
 		return s.toUtf8();

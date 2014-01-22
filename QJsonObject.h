@@ -36,13 +36,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class QJsonObject : public QJsonRoot {
 	friend class QJsonDocument;
 	friend class QJsonValue;
+	friend class QJsonValueRef;
 	friend class QJsonParser;
 public:
 	// TODO: manually implement the map, for now we use QMap
 	//       but the real thing has a custom implementation
 	//       I guess for the purposes of less interdependancies?
 	//       maybe so it's easier to forward declare the iterators?
-	
+
 	typedef QMap<QString, QJsonValue>::const_iterator const_iterator;
 	typedef QMap<QString, QJsonValue>::iterator       iterator;
 	typedef const_iterator                            ConstIterator;
@@ -76,7 +77,7 @@ public:
 	bool contains(const QString &key) const;
 	iterator find(const QString &key);
 	const_iterator find(const QString &key) const;
-	
+
 public:
 	iterator erase(iterator it);
 	iterator insert(const QString &key, const QJsonValue &value);
@@ -89,7 +90,7 @@ public:
 	bool operator==(const QJsonObject &other) const;
 	QJsonValue operator[](const QString &key) const;
 	QJsonValueRef operator[](const QString &key);
-	
+
 public:
 	QVariantMap toVariantMap() const;
 

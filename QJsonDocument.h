@@ -40,7 +40,7 @@ public:
 		Validate         = 0,
 		BypassValidation = 1
 	};
-	
+
 	enum JsonFormat {
 		Indented,
 		Compact
@@ -75,25 +75,25 @@ public:
 	QJsonArray array() const;
 	QJsonObject object() const;
 	const char *rawData(int *size) const;
-	
+
 public:
 	void setArray(const QJsonArray &array);
 	void setObject(const QJsonObject &object);
 
-public: 
+public:
 	static QJsonDocument fromBinaryData(const QByteArray &data, DataValidation validation = Validate);
 	static QJsonDocument fromJson(const QByteArray &json, QJsonParseError *error = 0);
 	static QJsonDocument fromRawData(const char *data, int size, DataValidation validation = Validate);
 	static QJsonDocument fromVariant(const QVariant &variant);
-	
+
 private:
 	void setRoot(const QJsonRoot &root);
 	QString toJson(const QJsonValue &v, JsonFormat format) const;
 	QString escapeString(const QString &s) const;
-	
+
 private:
 	void swap(QJsonDocument &other);
-	
+
 private:
 	QJsonRoot *root_;
 };
