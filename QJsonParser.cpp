@@ -30,13 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace {
 
-void throw_error(QJsonParseError::ParseError e, int offset) {
-	QJsonParseError err;
-	err.error  = e;
-	err.offset = offset;
-	throw err;
-}
-
 unsigned int to_hex(int ch) {
 
 	static const int hexval[256] = {
@@ -77,9 +70,9 @@ QJsonRoot *QJsonParser::parse() {
 	try {
 		const char ch = peek();
 		switch(ch) {
-		case '[':
+		case ArrayBegin:
 			return getArray();
-		case '{':
+		case ObjectBegin:
 			return getObject();
 		default:
 			state_.error  = QJsonParseError::IllegalValue;
@@ -110,29 +103,17 @@ char QJsonParser::peek() {
 QJsonValue QJsonParser::getValue() {
 
 	switch(peek()) {
-	case '{':
+	case ObjectBegin:
 		{
 			QScopedPointer<QJsonObject> obj(getObject());
 			return QJsonValue(*obj);
 		}
-	case '[':
+	case ArrayBegin:
 		{
 			QScopedPointer<QJsonArray> arr(getArray());
 			return QJsonValue(*arr);
 		}
-	case '0':
-	case '1':
-	case '2':
-	case '3':
-	case '4':
-	case '5':
-	case '6':
-	case '7':
-	case '8':
-	case '9':
-	case '-':
-		return getNumber();
-	case '"':
+	case Quote:
 		return QJsonValue(getString());
 	case 't':
 		return getTrue();
@@ -140,9 +121,11 @@ QJsonValue QJsonParser::getValue() {
 		return getFalse();
 	case 'n':
 		return getNull();
+	default:
+		return getNumber();
 	}
 
-	throw_error(QJsonParseError::MissingObject, p_ - begin_);
+	throwError(QJsonParseError::MissingObject);
 	return QJsonValue();
 }
 
@@ -154,15 +137,15 @@ QJsonObject *QJsonParser::getObject() {
 	QScopedPointer<QJsonObject> obj(new QJsonObject);
 
 	char tok = peek();
-	if(tok != '{') {
-		throw_error(QJsonParseError::IllegalValue, p_ - begin_);
+	if(tok != ObjectBegin) {
+		throwError(QJsonParseError::IllegalValue);
 	}
 
 	++p_;
 
 	// handle empty object
-	if(peek() == '}') {
-		tok = '}';
+	tok = peek();
+	if(peek() == ObjectEnd) {
 		++p_;
 	} else {
 
@@ -173,11 +156,11 @@ QJsonObject *QJsonParser::getObject() {
 			tok = peek();
 			++p_;
 
-		} while(tok == ',');
+		} while(tok == ValueSeparator);
 	}
 
-	if(tok != '}') {
-		throw_error(QJsonParseError::UnterminatedObject, p_ - begin_);
+	if(tok != ObjectEnd) {
+		throwError(QJsonParseError::UnterminatedObject);
 	}
 
 	return obj.take();
@@ -192,15 +175,15 @@ QJsonArray *QJsonParser::getArray() {
 
 	char tok = peek();
 
-	if(tok != '[') {
-		throw_error(QJsonParseError::IllegalValue, p_ - begin_);
+	if(tok != ArrayBegin) {
+		throwError(QJsonParseError::IllegalValue);
 	}
 
 	++p_;
 
 	// handle empty object
-	if(peek() == ']') {
-		tok = ']';
+	tok = peek();
+	if(tok == ArrayEnd) {
 		++p_;
 	} else {
 		do {
@@ -209,11 +192,11 @@ QJsonArray *QJsonParser::getArray() {
 			tok = peek();
 			++p_;
 
-		} while(tok == ',');
+		} while(tok == ValueSeparator);
 	}
 
-	if(tok != ']') {
-		throw_error(QJsonParseError::MissingValueSeparator, p_ - begin_);
+	if(tok != ArrayEnd) {
+		throwError(QJsonParseError::MissingValueSeparator);
 	}
 
 	return arr.take();
@@ -226,8 +209,8 @@ QPair<QString, QJsonValue> QJsonParser::getPair() {
 
 	QString key = getString();
 
-	if(peek() != ':') {
-		throw_error(QJsonParseError::MissingNameSeparator, p_ - begin_);
+	if(peek() != NameSeparator) {
+		throwError(QJsonParseError::MissingNameSeparator);
 	}
 	++p_;
 
@@ -239,14 +222,14 @@ QPair<QString, QJsonValue> QJsonParser::getPair() {
 //------------------------------------------------------------------------------
 QString QJsonParser::getString() {
 
-	if(peek() != '"') {
-		throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
+	if(peek() != Quote) {
+		throwError(QJsonParseError::IllegalUTF8String);
 	}
 	++p_;
 
 	QString s;
 
-	while(p_ != end_ && *p_ != '"' && *p_ != '\n') {
+	while(p_ != end_ && *p_ != Quote && *p_ != '\n') {
 		if(*p_ == '\\') {
 			++p_;
 			if(p_ != end_) {
@@ -263,15 +246,15 @@ QString QJsonParser::getString() {
 					{
 						// convert \uXXXX escape sequences to UTF-8
 						char hex[4];
-						if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[0] = *++p_;
-						if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[1] = *++p_;
-						if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[2] = *++p_;
-						if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[3] = *++p_;
+						if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[0] = *++p_;
+						if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[1] = *++p_;
+						if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[2] = *++p_;
+						if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[3] = *++p_;
 
-						if(!std::isxdigit(hex[0])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-						if(!std::isxdigit(hex[1])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-						if(!std::isxdigit(hex[2])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-						if(!std::isxdigit(hex[3])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
+						if(!std::isxdigit(hex[0])) throwError(QJsonParseError::IllegalUTF8String);
+						if(!std::isxdigit(hex[1])) throwError(QJsonParseError::IllegalUTF8String);
+						if(!std::isxdigit(hex[2])) throwError(QJsonParseError::IllegalUTF8String);
+						if(!std::isxdigit(hex[3])) throwError(QJsonParseError::IllegalUTF8String);
 
 						quint16 w1 = 0;
 						quint16 w2 = 0;
@@ -284,24 +267,24 @@ QString QJsonParser::getString() {
 						s.append(QChar(w1));
 
 						if((w1 & 0xfc00) == 0xdc00) {
-							throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
+							throwError(QJsonParseError::IllegalUTF8String);
 						}
 
 						if((w1 & 0xfc00) == 0xd800) {
 							// part of a surrogate pair
-							if(p_ == end_ || *++p_ != '\\') { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); }
-							if(p_ == end_ || *++p_ != 'u')  { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); }
+							if(p_ == end_ || *++p_ != '\\') { throwError(QJsonParseError::IllegalEscapeSequence); }
+							if(p_ == end_ || *++p_ != 'u')  { throwError(QJsonParseError::IllegalEscapeSequence); }
 
 							// convert \uXXXX escape sequences to UTF-8
-							if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[0] = *++p_;
-							if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[1] = *++p_;
-							if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[2] = *++p_;
-							if(p_ == end_) { throw_error(QJsonParseError::IllegalEscapeSequence, p_ - begin_); } hex[3] = *++p_;
+							if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[0] = *++p_;
+							if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[1] = *++p_;
+							if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[2] = *++p_;
+							if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[3] = *++p_;
 
-							if(!std::isxdigit(hex[0])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-							if(!std::isxdigit(hex[1])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-							if(!std::isxdigit(hex[2])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
-							if(!std::isxdigit(hex[3])) throw_error(QJsonParseError::IllegalUTF8String, p_ - begin_);
+							if(!std::isxdigit(hex[0])) throwError(QJsonParseError::IllegalUTF8String);
+							if(!std::isxdigit(hex[1])) throwError(QJsonParseError::IllegalUTF8String);
+							if(!std::isxdigit(hex[2])) throwError(QJsonParseError::IllegalUTF8String);
+							if(!std::isxdigit(hex[3])) throwError(QJsonParseError::IllegalUTF8String);
 
 							w2 |= (to_hex(hex[0]) << 12);
 							w2 |= (to_hex(hex[1]) << 8);
@@ -324,8 +307,8 @@ QString QJsonParser::getString() {
 		++p_;
 	}
 
-	if(*p_ != '"' || p_ == end_) {
-		throw_error(QJsonParseError::UnterminatedString, p_ - begin_);
+	if(*p_ != Quote || p_ == end_) {
+		throwError(QJsonParseError::UnterminatedString);
 	}
 
 	++p_;
@@ -337,10 +320,10 @@ QString QJsonParser::getString() {
 // Name: getNull
 //------------------------------------------------------------------------------
 QJsonValue QJsonParser::getNull() {
-	if(p_ == end_ || *p_++ != 'n') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'u') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'l') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'l') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
+	if(p_ == end_ || *p_++ != 'n') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'u') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'l') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'l') { throwError(QJsonParseError::IllegalValue); }
 
 	return QJsonValue();
 }
@@ -349,10 +332,10 @@ QJsonValue QJsonParser::getNull() {
 // Name: getTrue
 //------------------------------------------------------------------------------
 QJsonValue QJsonParser::getTrue() {
-	if(p_ == end_ || *p_++ != 't') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'r') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'u') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'e') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
+	if(p_ == end_ || *p_++ != 't') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'r') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'u') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'e') { throwError(QJsonParseError::IllegalValue); }
 
 	return QJsonValue(true);
 }
@@ -361,11 +344,11 @@ QJsonValue QJsonParser::getTrue() {
 // Name: getFalse
 //------------------------------------------------------------------------------
 QJsonValue QJsonParser::getFalse() {
-	if(p_ == end_ || *p_++ != 'f') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'a') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'l') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 's') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
-	if(p_ == end_ || *p_++ != 'e') { throw_error(QJsonParseError::IllegalValue, p_ - begin_); }
+	if(p_ == end_ || *p_++ != 'f') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'a') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'l') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 's') { throwError(QJsonParseError::IllegalValue); }
+	if(p_ == end_ || *p_++ != 'e') { throwError(QJsonParseError::IllegalValue); }
 
 	return QJsonValue(false);
 }
@@ -392,7 +375,7 @@ QJsonValue QJsonParser::getNumber() {
 		} else if(*p_ == '0') {
 			++p_;
 		} else {
-			throw_error(QJsonParseError::IllegalNumber, p_ - begin_);
+			throwError(QJsonParseError::IllegalNumber);
 		}
 	}
 
@@ -400,7 +383,7 @@ QJsonValue QJsonParser::getNumber() {
 	if(p_ != end_ && *p_ == '.') {
 		++p_;
 		if(!std::isdigit(*p_)) {
-			throw_error(QJsonParseError::IllegalNumber, p_ - begin_);
+			throwError(QJsonParseError::IllegalNumber);
 		}
 
 		while(p_ != end_ && std::isdigit(*p_)) {
@@ -415,7 +398,7 @@ QJsonValue QJsonParser::getNumber() {
 			++p_;
 		}
 		if(!std::isdigit(*p_)) {
-			throw_error(QJsonParseError::IllegalNumber, p_ - begin_);
+			throwError(QJsonParseError::IllegalNumber);
 		}
 		while(p_ != end_ && std::isdigit(*p_)) {
 			++p_;
@@ -423,7 +406,7 @@ QJsonValue QJsonParser::getNumber() {
 	}
 
 	if(p_ == end_) {
-		throw_error(QJsonParseError::TerminationByNumber, p_ - begin_);
+		throwError(QJsonParseError::TerminationByNumber);
 	}
 
 	return QJsonValue(QByteArray::fromRawData(first, p_ - first).toDouble());
@@ -434,6 +417,16 @@ QJsonValue QJsonParser::getNumber() {
 //------------------------------------------------------------------------------
 QJsonParseError QJsonParser::state() const {
 	return state_;
+}
+
+//------------------------------------------------------------------------------
+// Name: throwError
+//------------------------------------------------------------------------------
+void QJsonParser::throwError(QJsonParseError::ParseError e) {
+	QJsonParseError err;
+	err.error  = e;
+	err.offset = p_ - begin_;
+	throw err;
 }
 
 #endif

@@ -43,6 +43,15 @@ public:
 	QJsonParseError state() const;
 
 private:
+	static const char ArrayBegin     = '[';
+	static const char ArrayEnd       = ']';
+	static const char NameSeparator  = ':';
+	static const char ValueSeparator = ',';
+	static const char ObjectBegin    = '{';
+	static const char ObjectEnd      = '}';
+	static const char Quote          = '"';
+
+private:
 	char peek();
 	QJsonObject *getObject();
 	QJsonArray *getArray();
@@ -53,6 +62,9 @@ private:
 	QJsonValue getNull();
 	QJsonValue getNumber();
 	QPair<QString, QJsonValue> getPair();
+
+private:
+	void throwError(QJsonParseError::ParseError e);
 
 private:
 	QJsonParseError   state_;
