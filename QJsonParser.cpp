@@ -227,7 +227,7 @@ QString QJsonParser::getString() {
 	}
 	++p_;
 
-	QString s;
+	QByteArray s;
 
 	while(p_ != end_ && *p_ != Quote && *p_ != '\n') {
 		if(*p_ == '\\') {
@@ -313,7 +313,7 @@ QString QJsonParser::getString() {
 
 	++p_;
 
-	return s;
+	return QString::fromUtf8(s, s.size());
 }
 
 //------------------------------------------------------------------------------
