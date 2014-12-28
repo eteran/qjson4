@@ -244,6 +244,9 @@ QString QJsonParser::getString() {
 				case 't':  s.append('\t'); break;
 				case 'u':
 					{
+
+						QString hexChar;
+
 						// convert \uXXXX escape sequences to UTF-8
 						char hex[4];
 						if(p_ == end_) { throwError(QJsonParseError::IllegalEscapeSequence); } hex[0] = *++p_;
@@ -264,7 +267,7 @@ QString QJsonParser::getString() {
 						w1 |= (to_hex(hex[2]) << 4);
 						w1 |= (to_hex(hex[3]));
 
-						s.append(QChar(w1));
+						hexChar.append(QChar(w1));
 
 						if((w1 & 0xfc00) == 0xdc00) {
 							throwError(QJsonParseError::IllegalUTF8String);
@@ -291,8 +294,10 @@ QString QJsonParser::getString() {
 							w2 |= (to_hex(hex[2]) << 4);
 							w2 |= (to_hex(hex[3]));
 
-							s.append(QChar(w2));
+							hexChar.append(QChar(w2));
 						}
+
+						s.append(hexChar.toUtf8());
 					}
 					break;
 
