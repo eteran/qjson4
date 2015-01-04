@@ -83,7 +83,7 @@ bool QJsonDocument::operator!=(const QJsonDocument &other) const {
 // Name: operator==
 //------------------------------------------------------------------------------
 bool QJsonDocument::operator==(const QJsonDocument &other) const {
-	
+
 	if(isArray() && other.isArray()) {
 		return array() == other.array();
 	}
@@ -91,7 +91,7 @@ bool QJsonDocument::operator==(const QJsonDocument &other) const {
 	if(isObject() && other.isObject()) {
 		return object() == other.object();
 	}
-	
+
 	if(isEmpty() && other.isEmpty()) {
 		return true;
 	}
@@ -285,12 +285,14 @@ QByteArray QJsonDocument::toJson(JsonFormat format) const {
 //------------------------------------------------------------------------------
 QVariant QJsonDocument::toVariant() const {
 
-	if(QJsonObject *const object = root_->toObject()) {
-		return object->toVariantMap();
-	}
+	if(!isEmpty()) {
+		if(QJsonObject *const object = root_->toObject()) {
+			return object->toVariantMap();
+		}
 
-	if(QJsonArray *const array = root_->toArray()) {
-		return array->toVariantList();
+		if(QJsonArray *const array = root_->toArray()) {
+			return array->toVariantList();
+		}
 	}
 
 	return QVariant();
@@ -301,8 +303,10 @@ QVariant QJsonDocument::toVariant() const {
 //------------------------------------------------------------------------------
 QJsonArray QJsonDocument::array() const {
 
-	if(QJsonArray *const array = root_->toArray()) {
-		return *array;
+	if(!isEmpty()) {
+		if(QJsonArray *const array = root_->toArray()) {
+			return *array;
+		}
 	}
 
 	return QJsonArray();
@@ -313,8 +317,10 @@ QJsonArray QJsonDocument::array() const {
 //------------------------------------------------------------------------------
 QJsonObject QJsonDocument::object() const {
 
-	if(QJsonObject *const object = root_->toObject()) {
-		return *object;
+	if(!isEmpty()) {
+		if(QJsonObject *const object = root_->toObject()) {
+			return *object;
+		}
 	}
 
 	return QJsonObject();
