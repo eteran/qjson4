@@ -90,7 +90,7 @@ QJsonRoot *QJsonParser::parse() {
 //------------------------------------------------------------------------------
 char QJsonParser::peek() {
 	// first eat up some whitespace
-	while(p_ != end_ && isspace(*p_)) {
+	while(p_ != end_ && std::isspace(*p_)) {
 		++p_;
 	}
 
