@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QJsonObject.h"
 
 #if QT_VERSION < 0x050000
+#include <QtCore/QtAlgorithms>
 
 //------------------------------------------------------------------------------
 // Name: QJsonValue
