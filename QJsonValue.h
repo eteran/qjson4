@@ -98,12 +98,15 @@ private:
 
 private:
 	Type type_;
-	union {
+
+	union ValueType {
 		bool       b;
 		double     n;
 		QString   *s;
 		QJsonRoot *r; // OJsonObject or QJsonArray
-	} value_;
+	};
+
+	ValueType value_;
 };
 
 #endif
