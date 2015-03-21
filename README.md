@@ -67,4 +67,4 @@ Here's an example of using the library:
         	}
 	}
 
-If you are not using Qt, but still want a high quality c++ JSON implementation, then you can also check out my other JSON project cpp-json
+If you are not using Qt, but still want a high quality c++ JSON implementation, then you can also check out my other JSON project [cpp-json](https://github.com/eteran/cpp-json).
