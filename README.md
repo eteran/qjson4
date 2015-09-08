@@ -4,7 +4,7 @@ Additionally, it is designed to be forward compatible, so if the library is buil
 
 Simply include the files in your project and `#include QJsonDocument.h` wherever you would `#include <QJsonDocument>` and it should be a drop-in replacement.
 
-NOTE: The library is not 100% complete yet, but is at a usable stage in development. I do plan to implement the library completely at some point. The following functions have no yet been implemented:
+NOTE: The library is not 100% complete yet, but is at a usable stage in development. I do plan to implement the library completely at some point. The following functions have not yet been implemented:
 
 * QJsonDocument::fromRawData
 * QJsonDocument::fromBinaryData
