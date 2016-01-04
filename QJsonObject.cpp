@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,6 +31,18 @@ QJsonObject::QJsonObject() {
 //------------------------------------------------------------------------------
 QJsonObject::QJsonObject(const QJsonObject &other) : values_(other.values_) {
 }
+
+#if __cplusplus >= 201103L
+//------------------------------------------------------------------------------
+// Name: QJsonObject
+//------------------------------------------------------------------------------
+QJsonObject::QJsonObject(std::initializer_list<QPair<QString, QJsonValue> > args) {
+	for(const QPair<QString, QJsonValue> &arg : args) {
+		values_.insert(arg.first, arg.second);
+
+	}
+}
+#endif
 
 //------------------------------------------------------------------------------
 // Name: ~QJsonObject
@@ -235,9 +247,31 @@ QVariantMap QJsonObject::toVariantMap() const {
 //------------------------------------------------------------------------------
 // Name:
 //------------------------------------------------------------------------------
+QVariantHash QJsonObject::toVariantHash() const {
+	QVariantHash a;
+	for(const_iterator it = begin(); it != end(); ++it) {
+		a.insert(it.key(), it.value().toVariant());
+	}
+	return a;
+}
+
+//------------------------------------------------------------------------------
+// Name:
+//------------------------------------------------------------------------------
 QJsonObject QJsonObject::fromVariantMap(const QVariantMap &map) {
 	QJsonObject o;
 	for(QVariantMap::const_iterator it = map.begin(); it != map.end(); ++it) {
+		o.insert(it.key(), QJsonValue::fromVariant(it.value()));
+	}
+	return o;
+}
+
+//------------------------------------------------------------------------------
+// Name:
+//------------------------------------------------------------------------------
+QJsonObject QJsonObject::fromVariantHash(const QVariantHash &hash) {
+	QJsonObject o;
+	for(QVariantHash::const_iterator it = hash.begin(); it != hash.end(); ++it) {
 		o.insert(it.key(), QJsonValue::fromVariant(it.value()));
 	}
 	return o;

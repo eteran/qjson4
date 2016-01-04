@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #if QT_VERSION < 0x050000
 #include <QtCore/QtAlgorithms>
+#include <QtCore/qmath.h>
 
 //------------------------------------------------------------------------------
 // Name: QJsonValue
@@ -57,6 +58,15 @@ QJsonValue::QJsonValue(QLatin1String s) : type_(String) {
 	value_.s = new QString(s);
 }
 
+#ifndef QT_NO_CAST_FROM_ASCII
+//------------------------------------------------------------------------------
+// Name: QJsonValue
+//------------------------------------------------------------------------------
+QJsonValue::QJsonValue(const char *s) : type_(String) {
+	value_.s = new QString(QString::fromUtf8(s));
+}
+#endif
+
 //------------------------------------------------------------------------------
 // Name: QJsonValue
 //------------------------------------------------------------------------------
@@ -75,6 +85,13 @@ QJsonValue::QJsonValue(const QJsonObject &o) : type_(Object) {
 // Name: QJsonValue
 //------------------------------------------------------------------------------
 QJsonValue::QJsonValue(int n) : type_(Double) {
+	value_.n = n;
+}
+
+//------------------------------------------------------------------------------
+// Name: QJsonValue
+//------------------------------------------------------------------------------
+QJsonValue::QJsonValue(qint64 n) : type_(Double) {
 	value_.n = n;
 }
 
@@ -254,6 +271,17 @@ bool QJsonValue::toBool(bool defaultValue) const {
 //------------------------------------------------------------------------------
 double QJsonValue::toDouble(double defaultValue) const {
 	if(isDouble()) {
+		return value_.n;
+	}
+
+	return defaultValue;
+}
+
+//------------------------------------------------------------------------------
+// Name: toInt
+//------------------------------------------------------------------------------
+int QJsonValue::toInt(int defaultValue) const {
+	if(isDouble() && qFloor(value_.n) == value_.n) {
 		return value_.n;
 	}
 

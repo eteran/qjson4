@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,10 +39,10 @@ class QJsonObject : public QJsonRoot {
 	friend class QJsonValueRef;
 	friend class QJsonParser;
 public:
-	// TODO: manually implement the map, for now we use QMap
-	//       but the real thing has a custom implementation
-	//       I guess for the purposes of less interdependancies?
-	//       maybe so it's easier to forward declare the iterators?
+	// TODO(eteran): manually implement the map, for now we use QMap
+	//               but the real thing has a custom implementation
+	//               I guess for the purposes of less interdependancies?
+	//               maybe so it's easier to forward declare the iterators?
 
 	typedef QMap<QString, QJsonValue>::const_iterator const_iterator;
 	typedef QMap<QString, QJsonValue>::iterator       iterator;
@@ -54,8 +54,12 @@ public:
 
 public:
 	QJsonObject();
+#if __cplusplus >= 201103L
+	QJsonObject(std::initializer_list<QPair<QString, QJsonValue> > args);
+#endif
 	QJsonObject(const QJsonObject &other);
 	~QJsonObject();
+	QJsonObject &operator=(const QJsonObject &other);
 
 public:
 	iterator begin();
@@ -86,16 +90,17 @@ public:
 	QJsonValue take(const QString &key);
 	QJsonValue value(const QString &key) const;
 	bool operator!=(const QJsonObject &other) const;
-	QJsonObject &operator=(const QJsonObject &other);
 	bool operator==(const QJsonObject &other) const;
 	QJsonValue operator[](const QString &key) const;
 	QJsonValueRef operator[](const QString &key);
 
 public:
 	QVariantMap toVariantMap() const;
+	QVariantHash toVariantHash() const;
 
 public:
 	static QJsonObject fromVariantMap(const QVariantMap &map);
+	static QJsonObject fromVariantHash(const QVariantHash &hash);
 
 private:
 	virtual QJsonRoot *clone() const;

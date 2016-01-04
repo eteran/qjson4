@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -49,12 +49,17 @@ public:
 	QJsonValue(Type type = Null);
 	QJsonValue(bool b);
 	QJsonValue(double n);
+	QJsonValue(int n);
+	QJsonValue(qint64 n);
 	QJsonValue(const QString &s);
 	QJsonValue(QLatin1String s);
+#ifndef QT_NO_CAST_FROM_ASCII
+	QJsonValue(const char *s);
+#endif
 	QJsonValue(const QJsonArray &a);
 	QJsonValue(const QJsonObject &o);
 	QJsonValue(const QJsonValue &other);
-	QJsonValue(int n);
+
 	~QJsonValue();
 
 private:
@@ -82,6 +87,7 @@ public:
 	QJsonArray toArray() const;
 	bool toBool(bool defaultValue = false) const;
 	double toDouble(double defaultValue = 0) const;
+	int toInt(int defaultValue = 0) const;
 	QJsonObject toObject(const QJsonObject &defaultValue) const;
 	QJsonObject toObject() const;
 	QString toString(const QString &defaultValue = QString()) const;

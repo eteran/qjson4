@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef QJSON_PARSEERROR_H_
-#define QJSON_PARSEERROR_H_
+#ifndef QJSON_PARSE_ERROR_H_
+#define QJSON_PARSE_ERROR_H_
 
 #include <QtCore/QtGlobal>
 
@@ -43,7 +43,8 @@ public:
 		UnterminatedString     = 10,
 		MissingObject		   = 11,
 		DeepNesting 		   = 12,
-		DocumentTooLarge       = 13
+		DocumentTooLarge       = 13,
+		GarbageAtEnd           = 14  // TODO(eteran): implement code to catch this
 	};
 
 public:

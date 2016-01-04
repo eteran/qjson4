@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,10 +38,11 @@ class QJsonArray : public QJsonRoot {
 	friend class QJsonValueRef;
 	friend class QJsonParser;
 public:
-	// TODO: manually implement the array, for now we use QList
-	//       but the real thing has a custom implementation
-	//       I guess for the purposes of less interdependancies?
-	//       maybe so it's easier to forward declare the iterators?
+	// TODO(eteran): manually implement the array, for now we use QList
+	//               but the real thing has a custom implementation
+	//               I guess for the purposes of less interdependancies?
+	//               maybe so it's easier to forward declare the iterators?
+
 	typedef QList<QJsonValue>::const_iterator  const_iterator;
 	typedef QList<QJsonValue>::iterator        iterator;
 	typedef	const_iterator                       ConstIterator;
@@ -57,6 +58,9 @@ public:
 public:
 	QJsonArray();
 	QJsonArray(const QJsonArray &other);
+#if __cplusplus >= 201103L
+	QJsonArray(std::initializer_list<QJsonValue> args);
+#endif
 	~QJsonArray();
 
 public:
@@ -65,6 +69,9 @@ public:
 public:
 	bool operator!=(const QJsonArray &other) const;
 	bool operator==(const QJsonArray &other) const;
+	QJsonArray operator+(const QJsonValue &value) const;
+	QJsonArray &operator+=(const QJsonValue &value);
+	QJsonArray &operator<<(const QJsonValue &value);
 
 public:
 	const_iterator begin() const;

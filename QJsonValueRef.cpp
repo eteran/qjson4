@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -151,6 +151,14 @@ bool QJsonValueRef::toBool() const {
 //------------------------------------------------------------------------------
 double QJsonValueRef::toDouble() const {
 	return toValue().toDouble();
+}
+
+//------------------------------------------------------------------------------
+// Name: toInt
+// Desc:
+//------------------------------------------------------------------------------
+int QJsonValueRef::toInt(int defaultValue) const {
+	return toValue().toInt(defaultValue);
 }
 
 //------------------------------------------------------------------------------

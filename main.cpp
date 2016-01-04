@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,11 +46,13 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
+	qDebug() << "----------------------------------";
+
 	// Regression test for issue #3
 	QVariantMap map;
-	map.insert ("int",INT_MAX);
-	map.insert ("double",3.1415926);
-	map.insert ("name","hell");
-	QJsonDocument doc = QJsonDocument::fromVariant (map);
+	map.insert("int", INT_MAX);
+	map.insert("double", 3.1415926);
+	map.insert("name", "hell");
+	QJsonDocument doc = QJsonDocument::fromVariant(map);
 	qDebug() << doc.toJson();
 }

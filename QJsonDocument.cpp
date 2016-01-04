@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -116,9 +116,9 @@ bool QJsonDocument::isArray() const {
 //------------------------------------------------------------------------------
 bool QJsonDocument::isEmpty() const {
 
-	// TODO: figure out the rules here that Qt5 uses
-	//       it *looks* like they define empty as being NULL
-	//       which is obviously different than this
+	// TODO(eteran): figure out the rules here that Qt5 uses
+	//               it *looks* like they define empty as being NULL
+	//               which is obviously different than this
 
 	return !root_;
 }
@@ -164,7 +164,7 @@ void QJsonDocument::setRoot(const QJsonRoot &root) {
 //------------------------------------------------------------------------------
 QByteArray QJsonDocument::toBinaryData() const {
 	QByteArray r;
-	// TODO
+	// TODO(eteran): implement this
 	return r;
 }
 
@@ -220,7 +220,7 @@ QString QJsonDocument::toJson(const QJsonValue &v, JsonFormat format) const {
 			} else {
 				ss <<  "null"; // +INF || -INF || NaN (see RFC4627#section2.4)
 			}
-		}	
+		}
 		break;
 	case QJsonValue::String:
 		ss << '"' << escapeString(v.toString()) << '"';
@@ -340,7 +340,7 @@ QJsonObject QJsonDocument::object() const {
 //------------------------------------------------------------------------------
 const char *QJsonDocument::rawData(int *size) const {
 	Q_UNUSED(size);
-	// TODO
+	// TODO(eteran): implement this
 	return 0;
 }
 
@@ -352,7 +352,7 @@ QJsonDocument QJsonDocument::fromBinaryData(const QByteArray &data, DataValidati
 	Q_UNUSED(validation);
 
 	QJsonDocument doc;
-	// TODO
+	// TODO(eteran): implement this
 	return doc;
 }
 

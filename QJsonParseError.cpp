@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,6 +54,8 @@ QString QJsonParseError::errorString() const {
 		return "too deeply nested document";
 	case DocumentTooLarge:
 		return "too large document";
+	case GarbageAtEnd:
+		return "garbage at the end of the document";
 	}
 
 	return QString();

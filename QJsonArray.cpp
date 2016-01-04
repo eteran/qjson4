@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2014 - 2014 Evan Teran
-                          eteran@alum.rit.edu
+Copyright (C) 2014 - 2016 Evan Teran
+                          evan.teran@gmail.com
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -39,6 +39,18 @@ QJsonArray::QJsonArray(const QJsonArray &other) : values_(other.values_) {
 
 }
 
+#if __cplusplus >= 201103L
+//------------------------------------------------------------------------------
+// Name: QJsonArray
+// Desc: Creates an array initialized from args initialization list.
+//------------------------------------------------------------------------------
+QJsonArray::QJsonArray(std::initializer_list<QJsonValue> args) {
+	for(const QJsonValue &arg : args) {
+		values_.append(arg);
+	}
+}
+#endif
+
 //------------------------------------------------------------------------------
 // Name: ~QJsonArray
 // Desc: destructor
@@ -54,6 +66,34 @@ QJsonArray::~QJsonArray() {
 QJsonArray &QJsonArray::operator=(const QJsonArray &other) {
 	QJsonArray(other).swap(*this);
 	return *this;
+}
+
+//------------------------------------------------------------------------------
+// Name: operator+=
+// Desc:
+//------------------------------------------------------------------------------
+QJsonArray &QJsonArray::operator+=(const QJsonValue &value) {
+	values_.append(value);
+	return *this;
+}
+
+//------------------------------------------------------------------------------
+// Name: operator<<
+// Desc:
+//------------------------------------------------------------------------------
+QJsonArray &QJsonArray::operator<<(const QJsonValue &value) {
+	values_.append(value);
+	return *this;
+}
+
+//------------------------------------------------------------------------------
+// Name: operator+
+// Desc:
+//------------------------------------------------------------------------------
+QJsonArray QJsonArray::operator+(const QJsonValue &value) const {
+	QJsonArray arr(*this);
+	arr.append(value);
+	return arr;
 }
 
 //------------------------------------------------------------------------------
