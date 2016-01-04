@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtCore/QByteArray>
 #include <QtCore/QTextStream>
 #include <QtCore/QTextCodec>
+#include <QtCore/QtCore>
 
 #if QT_VERSION < 0x050000
 
@@ -211,7 +212,15 @@ QString QJsonDocument::toJson(const QJsonValue &v, JsonFormat format) const {
 		ss << (v.toBool() ? "true" : "false");
 		break;
 	case QJsonValue::Double:
-		ss << v.toDouble();
+		{
+			double d = v.toDouble ();
+			if (qIsFinite(d)) {
+				                                           // +2 to format to ensure the expected precision
+				ss <<  QByteArray::number(d, 'g', 15 + 2); // ::digits10 is 15
+			} else {
+				ss <<  "null"; // +INF || -INF || NaN (see RFC4627#section2.4)
+			}
+		}	
 		break;
 	case QJsonValue::String:
 		ss << '"' << escapeString(v.toString()) << '"';

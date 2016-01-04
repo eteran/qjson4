@@ -45,4 +45,12 @@ int main(int argc, char *argv[]) {
 			qDebug() << e.errorString();
 		}
 	}
+	
+	// Regression test for issue #3
+	QVariantMap map;
+	map.insert ("int",INT_MAX);
+	map.insert ("double",3.1415926);
+	map.insert ("name","hell");
+	QJsonDocument doc = QJsonDocument::fromVariant (map);
+	qDebug() << doc.toJson();
 }
