@@ -30,17 +30,12 @@ int main(int argc, char *argv[]) {
 
 	QCoreApplication app(argc, argv);
 
-#if QT_VERSION < 0x050000
-	// unfortunately this part seems needed for Qt4 :-(
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-#endif
-
 	QFile f("test.json");
 	if(f.open(QIODevice::ReadOnly)) {
 		QJsonParseError e;
 		QJsonDocument d = QJsonDocument::fromJson(f.readAll(), &e);
 		if(!d.isNull()) {
-			qDebug() << d.toJson(QJsonDocument::Compact);
+			qDebug() << QString::fromUtf8(d.toJson(QJsonDocument::Compact));
 		} else {
 			qDebug() << e.errorString();
 		}
@@ -54,5 +49,5 @@ int main(int argc, char *argv[]) {
 	map.insert("double", 3.1415926);
 	map.insert("name", "hell");
 	QJsonDocument doc = QJsonDocument::fromVariant(map);
-	qDebug() << doc.toJson();
+	qDebug() <<  QString::fromUtf8(doc.toJson());
 }

@@ -19,8 +19,8 @@ Finally, the following flags are not yet respected:
 Here's an example of using the library:
 
 	/*
-	Copyright (C) 2014 - 2014 Evan Teran
-                        	  eteran@alum.rit.edu
+	Copyright (C) 2014 - 2016 Evan Teran
+                        	  evan.teran@gmail.com
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -48,23 +48,18 @@ Here's an example of using the library:
 
 	int main(int argc, char *argv[]) {
 
-        	QCoreApplication app(argc, argv);
+		QCoreApplication app(argc, argv);
 
-	#if QT_VERSION < 0x050000
-        	// unfortunately this part seems needed for Qt4 :-(
-        	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-	#endif
-
-        	QFile f("test.json");
-        	if(f.open(QIODevice::ReadOnly)) {
-                	QJsonParseError e;
-                	QJsonDocument d = QJsonDocument::fromJson(f.readAll(), &e);
-                	if(!d.isNull()) {
-                        	qDebug() << d.toJson(QJsonDocument::Compact);
-                	} else {
-                        	qDebug() << e.errorString();
-                	}
-        	}
+		QFile f("test.json");
+		if(f.open(QIODevice::ReadOnly)) {
+			QJsonParseError e;
+			QJsonDocument d = QJsonDocument::fromJson(f.readAll(), &e);
+			if(!d.isNull()) {
+				qDebug() << QString::fromUtf8(d.toJson(QJsonDocument::Compact));
+			} else {
+				qDebug() << e.errorString();
+			}
+		}
 	}
 
 If you are not using Qt, but still want a high quality c++ JSON implementation, then you can also check out my other JSON project [cpp-json](https://github.com/eteran/cpp-json).
