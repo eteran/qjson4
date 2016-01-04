@@ -396,6 +396,8 @@ QJsonDocument QJsonDocument::fromVariant(const QVariant &variant) {
 
 	if (variant.type() == QVariant::Map) {
 		doc.setObject(QJsonObject::fromVariantMap(variant.toMap()));
+	} else if (variant.type() == QVariant::Hash) {
+		doc.setObject(QJsonObject::fromVariantHash(variant.toHash()));
 	} else if (variant.type() == QVariant::List) {
 		doc.setArray(QJsonArray::fromVariantList(variant.toList()));
 	} else if (variant.type() == QVariant::StringList) {

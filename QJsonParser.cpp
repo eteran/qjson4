@@ -67,22 +67,40 @@ QJsonRoot *QJsonParser::parse() {
 		return 0;
 	}
 
+	QJsonRoot *ret = 0;
+
 	try {
 		const char ch = peek();
 		switch(ch) {
 		case ArrayBegin:
-			return getArray();
+			ret = getArray();
+			break;
 		case ObjectBegin:
-			return getObject();
+			ret = getObject();
+			break;
 		default:
 			state_.error  = QJsonParseError::IllegalValue;
 			state_.offset = p_ - begin_;
-			return 0;
+			break;
 		}
 	} catch(const QJsonParseError &e) {
 		state_ = e;
-		return 0;
 	}
+
+	if(ret) {
+		// eat up trailing white space...
+		while(p_ != end_ && std::isspace(*p_)) {
+			++p_;
+		}
+
+		//detect trailing garbage
+		if(p_ != end_) {
+			state_.error  = QJsonParseError::GarbageAtEnd;
+			state_.offset = p_ - begin_;
+		}
+	}
+
+	return ret;
 }
 
 //------------------------------------------------------------------------------

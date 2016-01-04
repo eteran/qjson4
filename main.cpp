@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 	if(f.open(QIODevice::ReadOnly)) {
 		QJsonParseError e;
 		QJsonDocument d = QJsonDocument::fromJson(f.readAll(), &e);
-		if(!d.isNull()) {
+		if(!d.isNull() && e.error == QJsonParseError::NoError) {
 			qDebug() << QString::fromUtf8(d.toJson(QJsonDocument::Compact));
 		} else {
 			qDebug() << e.errorString();

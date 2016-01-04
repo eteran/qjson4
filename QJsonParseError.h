@@ -44,7 +44,7 @@ public:
 		MissingObject		   = 11,
 		DeepNesting 		   = 12,
 		DocumentTooLarge       = 13,
-		GarbageAtEnd           = 14  // TODO(eteran): implement code to catch this
+		GarbageAtEnd           = 14
 	};
 
 public:
