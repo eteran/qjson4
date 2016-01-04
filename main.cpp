@@ -49,5 +49,5 @@ int main(int argc, char *argv[]) {
 	map.insert("double", 3.1415926);
 	map.insert("name", "hell");
 	QJsonDocument doc = QJsonDocument::fromVariant(map);
-	qDebug() <<  QString::fromUtf8(doc.toJson());
+	qDebug() << QString::fromUtf8(doc.toJson());
 }
