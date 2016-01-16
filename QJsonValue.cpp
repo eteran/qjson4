@@ -355,6 +355,7 @@ QJsonValue QJsonValue::fromVariant(const QVariant &variant) {
 		return QJsonValue(variant.toBool());
 	case QVariant::Int:
 		return QJsonValue(variant.toInt());
+	case QMetaType::Float:
 	case QVariant::Double:
 	case QVariant::LongLong:
 	case QVariant::ULongLong:
