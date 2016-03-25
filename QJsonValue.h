@@ -115,6 +115,8 @@ private:
 	ValueType value_;
 };
 
+Q_DECLARE_METATYPE(QJsonValue)
+
 #endif
 
 #endif
