@@ -2,19 +2,19 @@ DEPENDPATH  += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += QJsonArray.h        \
-           QJsonDocument.h     \
-           QJsonObject.h       \
-           QJsonParseError.h   \
-           QJsonValue.h        \
-           QJsonValueRef.h     \
-           QJsonParser.h       \
-           QJsonRoot.h
+HEADERS += $$PWD/QJsonArray.h        \
+           $$PWD/QJsonDocument.h     \
+           $$PWD/QJsonObject.h       \
+           $$PWD/QJsonParseError.h   \
+           $$PWD/QJsonValue.h        \
+           $$PWD/QJsonValueRef.h     \
+           $$PWD/QJsonParser.h       \
+           $$PWD/QJsonRoot.h
 
-SOURCES += QJsonArray.cpp      \
-           QJsonDocument.cpp   \
-           QJsonObject.cpp     \
-           QJsonParseError.cpp \
-           QJsonValue.cpp      \
-           QJsonValueRef.cpp   \
-           QJsonParser.cpp
+SOURCES += $$PWD/QJsonArray.cpp      \
+           $$PWD/QJsonDocument.cpp   \
+           $$PWD/QJsonObject.cpp     \
+           $$PWD/QJsonParseError.cpp \
+           $$PWD/QJsonValue.cpp      \
+           $$PWD/QJsonValueRef.cpp   \
+           $$PWD/QJsonParser.cpp
