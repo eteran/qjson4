@@ -1,27 +1,10 @@
 
 TEMPLATE = app
 TARGET   = test
-DEPENDPATH  += .
-INCLUDEPATH += .
 
-# Input
-HEADERS += QJsonArray.h        \
-           QJsonDocument.h     \
-           QJsonObject.h       \
-           QJsonParseError.h   \
-           QJsonValue.h        \
-           QJsonValueRef.h     \
-		   QJsonParser.h       \
-		   QJsonRoot.h         \
+include($$PWD/QJson4.pri)
 
-SOURCES += main.cpp            \
-           QJsonArray.cpp      \
-           QJsonDocument.cpp   \
-           QJsonObject.cpp     \
-           QJsonParseError.cpp \
-           QJsonValue.cpp      \
-           QJsonValueRef.cpp   \
-		   QJsonParser.cpp     \
+SOURCES += main.cpp
 
 CONFIG(debug, debug|release) {
 	OBJECTS_DIR = $${OUT_PWD}/.debug/obj
