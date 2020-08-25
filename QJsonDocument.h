@@ -88,7 +88,7 @@ public:
 
 private:
 	void setRoot(const QJsonRoot &root);
-	QString toJson(const QJsonValue &v, JsonFormat format) const;
+	QString toJson(const QJsonValue &v, JsonFormat format, int indent = 1) const;
 	QString escapeString(const QString &s) const;
 
 private:
