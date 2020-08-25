@@ -14,7 +14,6 @@ NOTE: The library is not 100% complete yet, but is at a usable stage in developm
 Finally, the following flags are not yet respected:
 
 * QJsonDocument::BypassValidation
-* QJsonDocument::Indented
 
 Here's an example of using the library:
 
