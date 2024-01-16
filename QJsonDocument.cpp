@@ -203,7 +203,7 @@ QString QJsonDocument::toJson(const QJsonValue &v, JsonFormat format, int indent
 
 	QString b;
 	QTextStream ss(&b, QIODevice::WriteOnly | QIODevice::Text);
-	bool compact = (format == JsonFormat::Compact);
+	bool compact = (format == QJsonDocument::Compact);
 
 	switch(v.type()) {
 	case QJsonValue::Null:
